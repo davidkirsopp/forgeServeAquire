@@ -1,0 +1,31 @@
+version: '2'
+services:
+    forgeserveaquire-app:
+        image: forgeserveaquire
+        environment:
+            - SPRING_PROFILES_ACTIVE=prod,swagger
+            - SPRING_DATASOURCE_URL=jdbc:mysql://forgeserveaquire-mysql:3306/forgeserveaquire?useUnicode=true&characterEncoding=utf8&useSSL=false
+            - JHIPSTER_SLEEP=10 # gives time for the database to boot before the application
+            - SPRING_DATA_ELASTICSEARCH_CLUSTER_NODES=forgeserveaquire-elasticsearch:9300
+            - SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS=kafka
+            - SPRING_CLOUD_STREAM_KAFKA_BINDER_ZK_NODES=zookeeper
+        ports:
+            - 8091:8091
+    forgeserveaquire-mysql:
+        extends:
+            file: mysql.yml
+            service: forgeserveaquire-mysql
+    forgeserveaquire-elasticsearch:
+        extends:
+            file: elasticsearch.yml
+            service: forgeserveaquire-elasticsearch
+    kafka:
+        extends:
+            file: kafka.yml
+            service: kafka
+        environment:
+            - KAFKA_ADVERTISED_HOST_NAME=kafka
+    zookeeper:
+        extends:
+            file: kafka.yml
+            service: zookeeper
